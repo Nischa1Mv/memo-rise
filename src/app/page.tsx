@@ -1,101 +1,151 @@
-import Image from "next/image";
+"use client";
+
+import { useState } from "react";
+import Layout from "./components/Layout";
+import Navbar from "./components/NavBar";
+import Note from "./components/Note";
+import { Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+
+interface NoteData {
+  id: number;
+  title: string;
+  content: string;
+}
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [notes, setNotes] = useState<NoteData[]>([
+    { id: 1, title: "First Note", content: "This is your first note!" },
+  ]);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  const addNote = () => {
+    const newNote = {
+      id: Date.now(),
+      title: "New Note",
+      content: "",
+    };
+    setNotes([...notes, newNote]);
+  };
+
+  const updateNote = (id: number, title: string, content: string) => {
+    setNotes(
+      notes.map((note) => (note.id === id ? { ...note, title, content } : note))
+    );
+  };
+  const [isOpen, setIsOpen] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLogin, setIsLogin] = useState(true);
+  const [repeatPassword, setRepeatPassword] = useState("");
+
+  return (
+    <Layout>
+      <Navbar setIsOpen={setIsOpen} />
+      <main className="px-8 py-4 ">
+        <div className="grid grid-cols-4 w-fit flex-wrap justify-center gap-6 mx-auto">
+          {notes.map((note) => (
+            <Note key={note.id} {...note} onUpdate={updateNote} />
+          ))}
         </div>
+        <Button
+          onClick={addNote}
+          className="fixed bottom-8 right-8 rounded-full w-12 h-12 p-0"
+        >
+          <Plus className="h-6 w-6" />
+        </Button>
       </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+      <Sheet open={isOpen} onOpenChange={setIsOpen}>
+        <SheetTrigger></SheetTrigger>
+        <SheetContent side="right">
+          <SheetHeader>
+            <SheetTitle className="text-2xl px-10">
+              <div className="flex w-full justify-between">
+                <div
+                  onClick={() => {
+                    setIsLogin(true);
+                  }}
+                  className={`${
+                    isLogin ? "text-white" : "text-gray-400"
+                  } cursor-pointer`}
+                >
+                  Login
+                </div>
+                <div
+                  onClick={() => {
+                    setIsLogin(false);
+                  }}
+                  className={`${
+                    !isLogin ? "text-white" : "text-gray-400"
+                  } cursor-pointer`}
+                >
+                  Signup
+                </div>
+              </div>
+            </SheetTitle>
+            <SheetDescription>
+              <div className="flex flex-col justify-center gap-4 py-4 w-full">
+                <div className="w-[90%] mx-auto">
+                  <Label className="font-medium text-lg" htmlFor="email">
+                    Your email address
+                  </Label>
+                  <Input
+                    type="text"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="email"
+                    className="bg-transparent text-lg w-full rounded-none p-2 px-3 font-semibold mb-1 focus:outline-none placeholder-gray-500"
+                  />
+                </div>
+                <div className="w-[90%] mx-auto">
+                  <Label className="font-medium text-lg" htmlFor="password">
+                    Your password
+                  </Label>
+                  <Input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="password"
+                    className="bg-transparent w-full rounded-none p-2 px-3 text-lg font-semibold mb-1 focus:outline-none placeholder-gray-500"
+                  />
+                </div>
+
+                {!isLogin && (
+                  <div className="w-[90%] mx-auto">
+                    <Label
+                      className="font-medium text-lg"
+                      htmlFor="repeatPassword"
+                    >
+                      Repeat password
+                    </Label>
+                    <Input
+                      type="password"
+                      value={repeatPassword}
+                      onChange={(e) => setRepeatPassword(e.target.value)}
+                      placeholder="repeat password"
+                      className="bg-transparent w-full rounded-none p-2 px-3 text-lg font-semibold mb-1 focus:outline-none placeholder-gray-500"
+                    />
+                  </div>
+                )}
+
+                <Button className="w-[80%] mx-auto">
+                  {isLogin ? "Login" : "Signup"}
+                </Button>
+              </div>
+            </SheetDescription>
+          </SheetHeader>
+        </SheetContent>
+      </Sheet>
+    </Layout>
   );
 }
