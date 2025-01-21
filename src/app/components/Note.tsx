@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 interface NoteProps {
   id: number;
@@ -14,14 +16,46 @@ export default function Note({ id, title, content, onUpdate }: NoteProps) {
   const [noteTitle, setNoteTitle] = useState(title);
   const [noteContent, setNoteContent] = useState(content);
 
-  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setNoteTitle(e.target.value);
-    onUpdate(id, e.target.value, noteContent);
-  };
 
+  let debounceTimeout: ReturnType<typeof setTimeout> | null = null;
+  
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newTitle = e.target.value;
+    setNoteTitle(newTitle);
+    onUpdate(id, newTitle, noteContent);
+  
+    debounceSave();
+  };
+  
   const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setNoteContent(e.target.value);
-    onUpdate(id, noteTitle, e.target.value);
+    const newContent = e.target.value;
+    setNoteContent(newContent);
+    onUpdate(id, noteTitle, newContent);
+  
+    debounceSave();
+  };
+  
+  const debounceSave = () => {
+    if (debounceTimeout) {
+      clearTimeout(debounceTimeout); // Clear any existing timeout
+    }
+    debounceTimeout = setTimeout(() => {
+      handleSave(); // Call the save function after a delay
+      debounceTimeout = null; // Reset the timeout
+    }, 500); // Adjust the delay (in milliseconds) as needed
+  };
+  
+  const handleSave = async() => {
+    try{
+    const response = await axios.post("/api/notes", {title , content});
+    if(response.status===200) toast.success("Note saved successfully");
+    
+    } catch (error) {
+      console.error("Error saving note:", error);
+      toast.error("Failed to save note");
+    }
+
+
   };
 
   return (
