@@ -35,19 +35,19 @@ export default function Note({ id, title, content, onUpdate }: NoteProps) {
       }}
       className="border  p-2 w-72 h-80 border-gray-300 bg-white/40 dark:bg-black/10 backdrop-blur-sm shadow-lg hover:border-white/100 hover:transition-colors "
     >
-      <CardContent className="p-2 flex flex-col h-full ">
+      <CardContent className="p-2 flex flex-col w-full h-full">
         <Input
           type="text"
           value={noteTitle}
           onChange={handleTitleChange}
           placeholder="Title"
-          className="bg-transparent rounded-none p-2 text-sm font-semibold mb-1 focus:outline-none  placeholder-gray-500"
+          className="bg-transparent rounded-none  tracking-widest p-2 text-sm font-semibold mb-1 focus:outline-none placeholder-gray-500"
         />
         <Textarea
           value={noteContent}
           onChange={handleContentChange}
           placeholder="Note content"
-          className="bg-transparent  px-2 py-4 h-full border-0 text-ellipsis text-xs min-h-full  placeholder-gray-500"
+          className="bg-transparent px-2 py-4 tracking-widest text-ellipsis   text-ellipsis text-xs placeholder-gray-500"
         />
       </CardContent>
     </Card>
