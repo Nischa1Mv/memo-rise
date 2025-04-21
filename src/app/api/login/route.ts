@@ -3,6 +3,8 @@ import { connectDB } from "../../../../server/server";
 import User from "../../../../server/User";
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
+import env from "dotenv";
+env.config(); // Load environment variables
 
 connectDB();
 

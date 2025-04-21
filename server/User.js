@@ -20,13 +20,12 @@ const userSchema = new mongoose.Schema(
       required: [true, "Password is required"],
       minlength: [8, "Password must be at least 8 characters long"],
     },
-    
+
     profilePicture: {
       type: String,
-      default: profilePicture,
-    },
-    timestamps: true,
-  }
+    }
+  },
+  { timestamps: true }
 );
 
 // Ensure unique indexes for email and username
