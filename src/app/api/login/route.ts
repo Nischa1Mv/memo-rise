@@ -53,6 +53,7 @@ export async function POST(request: NextRequest) {
       message: "User logged in successfully",
       success: true,
       user: userWithoutPassword,
+      token:"Bearer " + token,
     });
 
     // token is sent in the cookies
