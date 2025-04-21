@@ -4,7 +4,8 @@ import path from "path";
 
 dotenv.config({ path: path.resolve(process.cwd(), ".env.local") });
 
-const mongoDBUrl = process.env.MONGODB_URL;
+// const mongoDBUrl = process.env.MONGODB_URL;
+const mongoDBUrl = "mongodb+srv://PingAdminX0X0:pingadminxoxo@ping.cuj9q.mongodb.net/MemoRise?retryWrites=true&w=majority&appName=Ping";
 
 export async function connectDB() {
   try {
