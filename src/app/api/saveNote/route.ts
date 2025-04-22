@@ -100,14 +100,16 @@ export async function POST(request: NextRequest) {
 
         let note = await Note.findOne({ id });
         if (note) {
-            note = await Note.findByIdAndUpdate(
-                id,
-                {
-                    title: titleTrimmed,
-                    content: contentTrimmed,
-                },
-                { new: true, runValidators: true }
-            );
+           console.log("Note already exists, updating:", id);
+           note = await Note.findOneAndUpdate(
+             { id },
+             {
+               title: titleTrimmed,
+               content: contentTrimmed,
+             },
+             { new: true }
+           );
+
         } else {
             note = await Note.create({
                 id: id,
