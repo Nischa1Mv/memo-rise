@@ -1,6 +1,11 @@
 import mongoose from "mongoose";
 const userSchema = new mongoose.Schema(
   {
+    Notes: [
+      {
+        type: String,
+      },
+    ],
     displayName: {
       type: String,
       trim: true,
@@ -28,8 +33,6 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// Ensure unique indexes for email and username
-userSchema.index({ email: 1 }, { unique: true });
 
 const User = mongoose.models.Users || mongoose.model("Users", userSchema);
 
