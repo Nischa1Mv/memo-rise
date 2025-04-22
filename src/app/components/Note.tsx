@@ -2,18 +2,22 @@ import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import axios from "axios";
 import { toast } from "react-toastify";
+import axios from "axios";
 
 interface NoteProps {
-  id: number;
+  updatedAt: string;
+  createdAt: string;
+  id: string;
   title: string;
   content: string;
-  onUpdate: (id: number, title: string, content: string) => void;
-  deleteNote: (id: number) => void;
+  onUpdate: (id: string, title: string, content: string) => void;
+  deleteNote: (id: string) => void;
 }
 
 export default function Note({
+  updatedAt,
+  createdAt,
   id,
   title,
   content,
@@ -26,11 +30,10 @@ export default function Note({
   useEffect(() => {
     const debounceTimeout = setTimeout(() => {
       onUpdate(id, noteTitle, noteContent);
-      handleSave();
     }, 500);
 
     return () => clearTimeout(debounceTimeout);
-  }, [noteTitle, noteContent]);
+  }, [noteTitle, noteContent, onUpdate]);
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNoteTitle(e.target.value);
@@ -42,13 +45,39 @@ export default function Note({
 
   const handleSave = async () => {
     toast.success("Note saved successfully");
+    saveNote();
     console.log("Saving note:", { id, title: noteTitle, content: noteContent });
+  };
+
+  const saveNote = async () => {
+    console.log("Saving note to server:", {
+      id,
+      title: noteTitle,
+      content: noteContent,
+    });
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.post("/api/saveNote", {
+        headers: {
+          Authorization: `${token}`,
+        },
+        body: {
+          id: id,
+          title: noteTitle,
+          content: noteContent,
+        },
+      });
+      console.log("Note saved successfully:", response.data);
+      toast.success("Note saved successfully");
+    } catch (error) {
+      console.error("Error saving note:", error);
+      toast.error("Error saving note");
+    }
   };
 
   return (
     <Card
       style={{
-        backgroundColor: "rgba(255, 255, 255, 0.1)",
         boxShadow: "0 5px 10px 0 rgba(225, 225, 225, 0.57)",
         backdropFilter: "blur(4px)",
         WebkitBackdropFilter: "blur(4px)",
