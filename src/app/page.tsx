@@ -152,8 +152,14 @@ export default function Home() {
     }
   };
 
-  const deleteNote = (id: string) => {
-    const updatedNotes = notes.filter((note) => note.id !== id);
+  const deleteNote = async (id: string) => {
+    await axios.delete("/api/deleteNote", {
+      data: { id: id },
+      headers: {
+        Authorization: `${localStorage.getItem("token")}`,
+      },
+    });
+    const updatedNotes = notes.filter((note: NoteData) => note.id !== id);
     setNotes(updatedNotes);
   };
 
