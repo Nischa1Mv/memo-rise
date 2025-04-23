@@ -43,12 +43,6 @@ export default function Note({
     setNoteContent(e.target.value);
   };
 
-  const handleSave = async () => {
-    toast.success("Note saved successfully");
-    saveNote();
-    console.log("Saving note:", { id, title: noteTitle, content: noteContent });
-  };
-
   const saveNote = async () => {
     console.log("Saving note to server:", {
       id,
@@ -57,16 +51,19 @@ export default function Note({
     });
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.post("/api/saveNote", {
-        headers: {
-          Authorization: `${token}`,
-        },
-        body: {
-          id: id,
+      const response = await axios.post(
+        "/api/saveNote",
+        {
+          id,
           title: noteTitle,
           content: noteContent,
         },
-      });
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Note: Include "Bearer" if your server expects it
+          },
+        }
+      );
       console.log("Note saved successfully:", response.data);
       toast.success("Note saved successfully");
     } catch (error) {
@@ -74,7 +71,6 @@ export default function Note({
       toast.error("Error saving note");
     }
   };
-
   return (
     <Card
       style={{
@@ -109,7 +105,7 @@ export default function Note({
           placeholder="Note content"
           className="bg-transparent px-2 py-4 tracking-widest text-ellipsis text-xs placeholder-gray-500 grow"
         />
-        <div onClick={handleSave}>
+        <div onClick={saveNote}>
           <button className="bg-blue-500 text-white rounded px-4 py-2 mt-2 hover:bg-blue-600 transition duration-200 ease-in-out">
             Save
           </button>
