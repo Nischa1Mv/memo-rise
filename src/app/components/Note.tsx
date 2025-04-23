@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from "react";
+"use client";
+import { use, useEffect, useRef, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -31,6 +32,26 @@ export default function Note({
 
   const prevTitleRef = useRef(noteTitle);
   const prevContentRef = useRef(noteContent);
+
+  const [timeAgo, setTimeAgo] = useState<string>("");
+
+  const getTimeAgo = (time: string): string => {
+    const now = new Date();
+    const past = new Date(time);
+    const diff = Math.floor((now.getTime() - past.getTime()) / 1000); // seconds
+
+    if (diff < 60) return `${diff} seconds ago`;
+    if (diff < 3600) return `${Math.floor(diff / 60)} minutes ago`;
+    if (diff < 86400) return `${Math.floor(diff / 3600)} hours ago`;
+    return `${Math.floor(diff / 86400)} days ago`;
+  };
+
+  useEffect(() => {
+    const update = () => setTimeAgo(getTimeAgo(updatedAt));
+    update(); // initial update
+    const interval = setInterval(update, 60000); // update every 1 minute
+    return () => clearInterval(interval);
+  }, [updatedAt]);
 
   useEffect(() => {
     if (!isMounted.current) {
@@ -110,14 +131,20 @@ export default function Note({
           placeholder="Note content"
           className="bg-transparent px-2 py-4 tracking-widest text-ellipsis text-xs placeholder-gray-500 grow"
         />
-        <div
-          onClick={handleSave}
-          className="relative flex justify-between items-end"
-        >
-          <button className="bg-neutral-800 text-white rounded-full px-4 py-2 text-sm mt-2 hover:bg-neutral-700 transition duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-neutral-500 dark:bg-neutral-200 dark:text-black dark:hover:bg-neutral-300 dark:focus:ring-neutral-400">
+        <div className="flex justify-between items-center pt-2 ">
+          <button
+            onClick={handleSave}
+            className="text-sm px-4 py-2 rounded-full bg-black text-white font-semibold 
+  hover:bg-white hover:text-black border border-white transition-all duration-300 
+  ease-in-out shadow-md hover:shadow-lg scale-100 hover:scale-105"
+          >
             Save
           </button>
-          {isLoader && <Loader />}
+
+          <div className="flex items-center gap-2 text-xs text-gray-400">
+            {isLoader && <Loader />}
+            <span className="italic">{timeAgo || "Just now"}</span>
+          </div>
         </div>
       </CardContent>
     </Card>
