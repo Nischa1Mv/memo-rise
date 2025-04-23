@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Layout from "./components/Layout";
 import Navbar from "./components/NavBar";
 import Note from "./components/Note";
@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import axios from "axios";
 import { toast } from "react-toastify";
+import debounce from "lodash/debounce";
 
 import {
   Sheet,
@@ -46,14 +47,6 @@ export default function Home() {
     localStorage.setItem("notes", JSON.stringify(updatedNotes));
   };
 
-  const updateNote = (id: string, title: string, content: string) => {
-    setIsLoader(true); // Start the loader before storage
-    const updatedNotes = notes.map((note) =>
-      note.id === id ? { ...note, title, content } : note
-    );
-    setNotes(updatedNotes);
-  };
-
   const [isOpen, setIsOpen] = useState(false);
   const [user, setUser] = useState({
     email: "",
@@ -61,10 +54,28 @@ export default function Home() {
   });
   const [isLogin, setIsLogin] = useState(true);
   const [repeatPassword, setRepeatPassword] = useState("");
-  const [error, setError] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [isLoader, setIsLoader] = useState(false);
-  // const [isDisabled, setIsDisabled] = useState(false);
+
+  const debouncedSaveNoteRef = useRef(
+    debounce((id: string, title: string, content: string) => {
+      saveNote(id, title, content);
+    }, 500)
+  );
+
+  const debouncedSaveNote = useCallback(
+    (id: string, title: string, content: string) => {
+      debouncedSaveNoteRef.current(id, title, content);
+    },
+    []
+  );
+  const updateNote = (id: string, title: string, content: string) => {
+    setIsLoader(true); // Start the loader before storage
+    const updatedNotes = notes.map((note) =>
+      note.id === id ? { ...note, title, content } : note
+    );
+    setNotes(updatedNotes);
+    debouncedSaveNote(id, title, content); // Debounced save
+  };
 
   const handleSignup = async () => {
     setIsLoader(true);
@@ -152,6 +163,37 @@ export default function Home() {
     }
   };
 
+  const saveNote = async (id: string, title: string, content: string) => {
+    console.log("Saving note to server:", {
+      id,
+      title,
+      content,
+    });
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.post(
+        "/api/saveNote",
+        {
+          id,
+          title,
+          content,
+        },
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
+      console.log("Note saved successfully:", response.data);
+      toast.success("Note saved successfully");
+      setIsLoader(false);
+    } catch (error) {
+      console.error("Error saving note:", error);
+      toast.error("Error saving note");
+      setIsLoader(false);
+    }
+  };
+
   const deleteNote = async (id: string) => {
     await axios.delete("/api/deleteNote", {
       data: { id: id },
@@ -195,6 +237,7 @@ export default function Home() {
                 content={note.content}
                 onUpdate={updateNote}
                 deleteNote={deleteNote}
+                isLoader={isLoader}
               />
             ))
           )}
