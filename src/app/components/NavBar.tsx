@@ -8,8 +8,8 @@ interface NavbarProps {
 
 export default function Navbar({ setIsOpen }: NavbarProps) {
   return (
-    <nav className="bg-transparent p-2 border-b-2 border-white">
-      <div className="container mx-auto flex items-center justify-between gap-6">
+    <nav className="bg-transparent p-2">
+      <div className="container max-w-[1000px] mx-auto flex items-center gap-6">
         <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
           NoteApp
         </div>

@@ -195,35 +195,35 @@ export default function Home() {
   };
 
   const deleteNote = async (id: string) => {
-  try {
-    await axios.delete("/api/deleteNote", {
-      data: { id: id },
-      headers: {
-        Authorization: `${localStorage.getItem("token")}`,
-      },
-    });
+    try {
+      await axios.delete("/api/deleteNote", {
+        data: { id: id },
+        headers: {
+          Authorization: `${localStorage.getItem("token")}`,
+        },
+      });
 
-    const updatedNotes = notes.filter((note: NoteData) => note.id !== id);
-    setNotes(updatedNotes);
+      const updatedNotes = notes.filter((note: NoteData) => note.id !== id);
+      setNotes(updatedNotes);
 
-    // Update local storage
-    localStorage.setItem("notes", JSON.stringify(updatedNotes));
-    toast.success("Note deleted successfully");
-  } catch (error) {
-    console.error("Error deleting note:", error);
-    toast.error("Error deleting note");
-  }
-};
+      // Update local storage
+      localStorage.setItem("notes", JSON.stringify(updatedNotes));
+      toast.success("Note deleted successfully");
+    } catch (error) {
+      console.error("Error deleting note:", error);
+      toast.error("Error deleting note");
+    }
+  };
 
   return (
     <Layout>
       <Navbar setIsOpen={setIsOpen} />
-      <main className="px-8 py-4 ">
+      <main className=" py-4 ">
         {" "}
         <div
           className={` ${
-            notes?.length === 0 ? "flex" : "grid grid-cols-4"
-          } w-fit flex-wrap justify-center gap-6 mx-auto `}
+            notes?.length === 0 ? "flex" : "flex gap-2"
+          } flex-wrap justify-center md:justify-start gap-6 max-w-[1000px] mx-auto `}
         >
           {notes?.length === 0 ? (
             <div className="w-full flex justify-center items-center text-[rgba(255,255,255,0.2)] font-semibold text-xl tracking-wide">
