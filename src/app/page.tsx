@@ -195,15 +195,25 @@ export default function Home() {
   };
 
   const deleteNote = async (id: string) => {
+  try {
     await axios.delete("/api/deleteNote", {
       data: { id: id },
       headers: {
         Authorization: `${localStorage.getItem("token")}`,
       },
     });
+
     const updatedNotes = notes.filter((note: NoteData) => note.id !== id);
     setNotes(updatedNotes);
-  };
+
+    // Update local storage
+    localStorage.setItem("notes", JSON.stringify(updatedNotes));
+    toast.success("Note deleted successfully");
+  } catch (error) {
+    console.error("Error deleting note:", error);
+    toast.error("Error deleting note");
+  }
+};
 
   return (
     <Layout>
