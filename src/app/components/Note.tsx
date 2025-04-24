@@ -1,9 +1,10 @@
 "use client";
-import { use, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import Loader from "@/components/ui/loader";
+import { set } from "lodash";
 
 interface NoteProps {
   updatedAt: string;
@@ -29,29 +30,9 @@ export default function Note({
   const [noteTitle, setNoteTitle] = useState(title);
   const [noteContent, setNoteContent] = useState(content);
   const isMounted = useRef(false);
-
+  const [changesAt, setChangesAt] = useState(0);
   const prevTitleRef = useRef(noteTitle);
   const prevContentRef = useRef(noteContent);
-
-  const [timeAgo, setTimeAgo] = useState<string>("");
-
-  const getTimeAgo = (time: string): string => {
-    const now = new Date();
-    const past = new Date(time);
-    const diff = Math.floor((now.getTime() - past.getTime()) / 1000); // seconds
-
-    if (diff < 60) return `${diff} seconds ago`;
-    if (diff < 3600) return `${Math.floor(diff / 60)} minutes ago`;
-    if (diff < 86400) return `${Math.floor(diff / 3600)} hours ago`;
-    return `${Math.floor(diff / 86400)} days ago`;
-  };
-
-  useEffect(() => {
-    const update = () => setTimeAgo(getTimeAgo(updatedAt));
-    update(); // initial update
-    const interval = setInterval(update, 60000); // update every 1 minute
-    return () => clearInterval(interval);
-  }, [updatedAt]);
 
   useEffect(() => {
     if (!isMounted.current) {
@@ -78,6 +59,42 @@ export default function Note({
       return () => clearTimeout(debounceTimeout);
     }
   }, [noteTitle, noteContent, id, onUpdate]);
+
+  useEffect(() => {
+    if (isLoader) {
+      setChangesAt(0);
+    } else {
+      // Calculate initial time difference when loading is done
+      const calculateTimeDiff = () => {
+        const updatedTime = new Date(updatedAt).getTime();
+        const currentTime = new Date().getTime();
+        const diffInSeconds = Math.floor((currentTime - updatedTime) / 1000);
+        return diffInSeconds;
+      };
+
+      // Set initial time difference
+      setChangesAt(calculateTimeDiff());
+
+      // Update time difference every second
+      const interval = setInterval(() => {
+        setChangesAt(calculateTimeDiff());
+      }, 1000);
+
+      return () => clearInterval(interval);
+    }
+  }, [isLoader, updatedAt]);
+
+  const formatTime = (seconds: number): string => {
+    if (seconds === 0) return "Just now";
+
+    if (seconds < 60) return `${seconds}s ago`;
+
+    const minutes = Math.floor(seconds / 60);
+    if (minutes < 60) return `${minutes}m ago`;
+
+    const hours = Math.floor(minutes / 60);
+    return `${hours}h ago`;
+  };
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNoteTitle(e.target.value);
@@ -143,7 +160,7 @@ export default function Note({
 
           <div className="flex items-center gap-2 text-xs text-gray-400">
             {isLoader && <Loader />}
-            <span className="italic">{timeAgo || "Just now"}</span>
+            <span className="italic">{formatTime(changesAt)}</span>
           </div>
         </div>
       </CardContent>
