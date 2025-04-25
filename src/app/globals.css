@@ -8,42 +8,6 @@ body {
 
 @layer base {
   :root {
-    --background: 0 0% 98%;
-    --foreground: 280 8% 16%;
-    --card: 0 0% 100%;
-    --card-foreground: 280 8% 16%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 280 8% 16%;
-    --primary: 340 76% 67%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 286 4% 96%;
-    --secondary-foreground: 280 8% 16%;
-    --muted: 286 4% 96%;
-    --muted-foreground: 280 8% 16%;
-    --accent: 170 45% 89%;
-    --accent-foreground: 280 8% 16%;
-    --destructive: 34 60% 65%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 225 2% 92%;
-    --input: 225 2% 92%;
-    --ring: 340 76% 67%;
-    --chart-1: 340 76% 67%;
-    --chart-2: 300 76% 55%;
-    --chart-3: 210 40% 84%;
-    --chart-4: 170 45% 89%;
-    --chart-5: 100 50% 92%;
-    --sidebar: 286 4% 96%;
-    --sidebar-foreground: 280 8% 16%;
-    --sidebar-primary: 340 76% 67%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 170 45% 89%;
-    --sidebar-accent-foreground: 280 8% 16%;
-    --sidebar-border: 225 2% 92%;
-    --sidebar-ring: 340 76% 67%;
-    /* Rest of your variables remain the same */
-  }
-
-  .dark {
     --background: 280 8% 16%;
     --foreground: 260 2% 95%;
     --card: 280 15% 25%;
@@ -76,8 +40,5 @@ body {
     --sidebar-accent-foreground: 280 8% 16%;
     --sidebar-border: 280 20% 33%;
     --sidebar-ring: 340 76% 67%;
-    /* Rest of your variables remain the same */
   }
-
-  /* Rest of your CSS remains unchanged */
 }
