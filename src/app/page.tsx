@@ -55,6 +55,7 @@ export default function Home() {
   const [isLogin, setIsLogin] = useState(true);
   const [repeatPassword, setRepeatPassword] = useState("");
   const [isLoader, setIsLoader] = useState(false);
+  const [isUser, setIsUser] = useState(false);
 
   const debouncedSaveNoteRef = useRef(
     debounce((id: string, title: string, content: string) => {
@@ -215,6 +216,21 @@ export default function Home() {
     }
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setIsOpen(false);
+    toast.success("Logout successful");
+  };
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      setIsUser(true);
+    } else {
+      setIsUser(false);
+    }
+  }, []);
+
   return (
     <Layout>
       <Navbar setIsOpen={setIsOpen} />
@@ -259,103 +275,125 @@ export default function Home() {
           <Plus className="h-6 w-6" />
         </Button>
       </main>
-      <Sheet open={isOpen} onOpenChange={setIsOpen}>
-        <SheetTrigger></SheetTrigger>
-        <SheetContent side="right">
-          <SheetHeader>
-            <SheetTitle className="text-2xl px-10">
-              <div className="flex w-full justify-between">
-                <div
-                  onClick={() => {
-                    setIsLogin(true);
-                  }}
-                  className={`${
-                    isLogin ? "text-white" : "text-gray-400"
-                  } cursor-pointer`}
-                >
-                  Login
+      {!isUser && (
+        <Sheet open={isOpen} onOpenChange={setIsOpen}>
+          <SheetTrigger></SheetTrigger>
+          <SheetContent side="right">
+            <SheetHeader>
+              <SheetTitle className="text-2xl px-10">
+                <div className="flex w-full justify-between">
+                  <div
+                    onClick={() => {
+                      setIsLogin(true);
+                    }}
+                    className={`${
+                      isLogin ? "text-white" : "text-gray-400"
+                    } cursor-pointer`}
+                  >
+                    Login
+                  </div>
+                  <div
+                    onClick={() => {
+                      setIsLogin(false);
+                    }}
+                    className={`${
+                      !isLogin ? "text-white" : "text-gray-400"
+                    } cursor-pointer`}
+                  >
+                    Signup
+                  </div>
                 </div>
-                <div
-                  onClick={() => {
-                    setIsLogin(false);
-                  }}
-                  className={`${
-                    !isLogin ? "text-white" : "text-gray-400"
-                  } cursor-pointer`}
-                >
-                  Signup
-                </div>
-              </div>
-            </SheetTitle>
-            <SheetDescription>
-              <form className="flex flex-col justify-center gap-4 py-4 w-full">
-                <div className="w-[90%] mx-auto">
-                  <Label className="font-medium text-lg" htmlFor="email">
-                    Your email address
-                  </Label>
-                  <Input
-                    type="text"
-                    value={user.email}
-                    required
-                    onChange={(e) =>
-                      setUser({ ...user, email: e.target.value })
-                    }
-                    placeholder="email"
-                    className="bg-transparent text-lg w-full rounded-none p-2 px-3 font-semibold mb-1 focus:outline-none placeholder-gray-500"
-                  />
-                </div>
-                <div className="w-[90%] mx-auto">
-                  <Label className="font-medium text-lg" htmlFor="password">
-                    Your password
-                  </Label>
-                  <Input
-                    type="password"
-                    value={user.password}
-                    onChange={(e) =>
-                      setUser({ ...user, password: e.target.value })
-                    }
-                    required
-                    placeholder="password"
-                    className="bg-transparent w-full rounded-none p-2 px-3 text-lg font-semibold mb-1 focus:outline-none placeholder-gray-500"
-                  />
-                </div>
-
-                {!isLogin && (
+              </SheetTitle>
+              <SheetDescription>
+                <div></div>
+                <form className="flex flex-col justify-center gap-4 py-4 w-full">
                   <div className="w-[90%] mx-auto">
-                    <Label
-                      className="font-medium text-lg"
-                      htmlFor="repeatPassword"
-                    >
-                      Repeat password
+                    <Label className="font-medium text-lg" htmlFor="email">
+                      Your email address
+                    </Label>
+                    <Input
+                      type="text"
+                      value={user.email}
+                      required
+                      onChange={(e) =>
+                        setUser({ ...user, email: e.target.value })
+                      }
+                      placeholder="email"
+                      className="bg-transparent text-lg w-full rounded-none p-2 px-3 font-semibold mb-1 focus:outline-none placeholder-gray-500"
+                    />
+                  </div>
+                  <div className="w-[90%] mx-auto">
+                    <Label className="font-medium text-lg" htmlFor="password">
+                      Your password
                     </Label>
                     <Input
                       type="password"
-                      value={repeatPassword}
+                      value={user.password}
+                      onChange={(e) =>
+                        setUser({ ...user, password: e.target.value })
+                      }
                       required
-                      onChange={(e) => setRepeatPassword(e.target.value)}
-                      placeholder="repeat password"
+                      placeholder="password"
                       className="bg-transparent w-full rounded-none p-2 px-3 text-lg font-semibold mb-1 focus:outline-none placeholder-gray-500"
                     />
                   </div>
-                )}
 
+                  {!isLogin && (
+                    <div className="w-[90%] mx-auto">
+                      <Label
+                        className="font-medium text-lg"
+                        htmlFor="repeatPassword"
+                      >
+                        Repeat password
+                      </Label>
+                      <Input
+                        type="password"
+                        value={repeatPassword}
+                        required
+                        onChange={(e) => setRepeatPassword(e.target.value)}
+                        placeholder="repeat password"
+                        className="bg-transparent w-full rounded-none p-2 px-3 text-lg font-semibold mb-1 focus:outline-none placeholder-gray-500"
+                      />
+                    </div>
+                  )}
+
+                  <Button
+                    onClick={() => {
+                      if (isLogin) {
+                        handleLogin();
+                      } else {
+                        handleSignup();
+                      }
+                    }}
+                    className="w-[80%] mx-auto"
+                  >
+                    {isLogin ? "Login" : "Signup"}
+                  </Button>
+                </form>
+              </SheetDescription>
+            </SheetHeader>
+          </SheetContent>
+        </Sheet>
+      )}
+      {isUser && (
+        <Sheet open={isOpen} onOpenChange={setIsOpen}>
+          <SheetTrigger></SheetTrigger>
+          <SheetContent side="right">
+            <SheetHeader>
+              <SheetTitle className="text-2xl">User Profile</SheetTitle>
+              <SheetDescription>
                 <Button
-                  onClick={() => {
-                    if (isLogin) {
-                      handleLogin();
-                    } else {
-                      handleSignup();
-                    }
-                  }}
-                  className="w-[80%] mx-auto"
+                  onClick={handleLogout}
+                  className="w-full mx-auto mt-4 bg-red-600 hover:bg-red-700 text-white"
+                  variant="destructive"
                 >
-                  {isLogin ? "Login" : "Signup"}
+                  Logout
                 </Button>
-              </form>
-            </SheetDescription>
-          </SheetHeader>
-        </SheetContent>
-      </Sheet>
+              </SheetDescription>
+            </SheetHeader>
+          </SheetContent>
+        </Sheet>
+      )}
     </Layout>
   );
 }
