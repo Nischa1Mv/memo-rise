@@ -152,7 +152,7 @@ export default function Note({
           <button
             onClick={handleSave}
             className="text-sm px-4 py-2 rounded-full bg-primary text-primary-foreground font-semibold 
-            hover:bg-background hover:text-foreground border border-border transition-all duration-300 
+            hover:bg-background hover:text-foreground transition-all duration-300 
             ease-in-out shadow-md hover:shadow-lg scale-100 hover:scale-105"
           >
             Save
