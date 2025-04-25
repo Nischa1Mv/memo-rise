@@ -8,20 +8,25 @@ interface NavbarProps {
 
 export default function Navbar({ setIsOpen }: NavbarProps) {
   return (
-    <nav className="bg-transparent p-2 ">
-      <div className="container max-w-[1000px] mx-auto mb-4 flex items-center gap-6">
-        <div className="text-4xl font-bold">NoteApp</div>
+    <nav className="bg-background/20 backdrop-blur-sm p-2 border-b border-border">
+      <div className="container max-w-[1000px] mx-auto py-2 flex items-center gap-6">
+        <div className="text-4xl font-bold text-primary">NoteApp</div>
         <div className="relative flex-grow mx-4">
           <Input
             type="text"
             placeholder="Search notes..."
-            className="w-full bg-transparent py-2  backdrop-blur-sm border-none"
+            className="w-full bg-background/50 py-3 backdrop-blur-sm"
           />
-          <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+          <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
         </div>
-        <Avatar className="cursor-pointer" onClick={() => setIsOpen(true)}>
+        <Avatar
+          className="cursor-pointer ring-offset-background transition-colors hover:ring-2 hover:ring-ring hover:ring-offset-2"
+          onClick={() => setIsOpen(true)}
+        >
           <AvatarImage src="https://github.com/shadcn.png" />
-          <AvatarFallback>CN</AvatarFallback>
+          <AvatarFallback className="bg-muted text-muted-foreground">
+            CN
+          </AvatarFallback>
         </Avatar>
       </div>
     </nav>
