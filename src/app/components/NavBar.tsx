@@ -8,16 +8,14 @@ interface NavbarProps {
 
 export default function Navbar({ setIsOpen }: NavbarProps) {
   return (
-    <nav className="bg-transparent p-2">
-      <div className="container max-w-[1000px] mx-auto flex items-center gap-6">
-        <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-          NoteApp
-        </div>
+    <nav className="bg-transparent p-2 ">
+      <div className="container max-w-[1000px] mx-auto mb-4 flex items-center gap-6">
+        <div className="text-4xl font-bold">NoteApp</div>
         <div className="relative flex-grow mx-4">
           <Input
             type="text"
             placeholder="Search notes..."
-            className="w-full bg-white/20 dark:bg-black/20 backdrop-blur-sm text-gray-900 dark:text-gray-100 border-none"
+            className="w-full bg-transparent py-2  backdrop-blur-sm border-none"
           />
           <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
         </div>

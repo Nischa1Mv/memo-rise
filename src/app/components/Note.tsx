@@ -115,12 +115,12 @@ export default function Note({
   return (
     <Card
       style={{
-        boxShadow: "0 5px 10px 0 rgba(225, 225, 225, 0.57)",
+        boxShadow: "var(--shadow-lg)",
         backdropFilter: "blur(4px)",
         WebkitBackdropFilter: "blur(4px)",
-        borderRadius: "10px",
+        borderRadius: "var(--radius)",
       }}
-      className="border p-2 w-72 h-80 border-gray-300 bg-white/40 dark:bg-black/10 backdrop-blur-sm shadow-lg hover:border-white/100 hover:transition-colors"
+      className="border p-2 w-72 h-80 border-border bg-background/40 dark:bg-background/10 backdrop-blur-sm shadow-lg hover:border-border hover:transition-colors"
     >
       <CardContent className="p-2 flex flex-col w-full h-full">
         <div className="flex gap-4 items-center">
@@ -130,10 +130,10 @@ export default function Note({
             value={noteTitle}
             onChange={handleTitleChange}
             placeholder="Title"
-            className="bg-transparent rounded-none tracking-widest p-2 text-sm font-semibold mb-1 focus:outline-none placeholder-gray-500"
+            className="bg-transparent rounded-none tracking-widest p-2 text-sm font-semibold mb-1 focus:outline-none placeholder-muted-foreground"
           />
           <div
-            className="text-xl font-semibold cursor-pointer hover:text-white text-gray-700 hover:scale-140"
+            className="text-xl font-semibold cursor-pointer hover:text-primary text-muted-foreground hover:scale-140"
             onClick={() => deleteNote(id)}
             aria-label="Delete note"
           >
@@ -146,19 +146,19 @@ export default function Note({
           value={noteContent}
           onChange={handleContentChange}
           placeholder="Note content"
-          className="bg-transparent px-2 py-4 tracking-widest text-ellipsis text-xs placeholder-gray-500 grow"
+          className="bg-transparent px-2 py-4 tracking-widest text-ellipsis text-xs placeholder-muted-foreground grow"
         />
-        <div className="flex justify-between items-center pt-2 ">
+        <div className="flex justify-between items-center pt-2">
           <button
             onClick={handleSave}
-            className="text-sm px-4 py-2 rounded-full bg-black text-white font-semibold 
-  hover:bg-white hover:text-black border border-white transition-all duration-300 
-  ease-in-out shadow-md hover:shadow-lg scale-100 hover:scale-105"
+            className="text-sm px-4 py-2 rounded-full bg-primary text-primary-foreground font-semibold 
+            hover:bg-background hover:text-foreground border border-border transition-all duration-300 
+            ease-in-out shadow-md hover:shadow-lg scale-100 hover:scale-105"
           >
             Save
           </button>
 
-          <div className="flex items-center gap-2 text-xs text-gray-400">
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
             {isLoader && <Loader />}
             <span className="italic">{formatTime(changesAt)}</span>
           </div>
