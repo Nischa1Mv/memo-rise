@@ -11,7 +11,7 @@ export default function Navbar({ setIsOpen }: NavbarProps) {
     <nav className="bg-background/20 backdrop-blur-sm p-2 border-b border-border">
       <div className="container max-w-[1000px] mx-auto py-2 flex items-center xl:gap-6 gap-1 ">
         <div className="md:text-4xl text-2xl font-bold text-primary">
-          NoteApp
+          MemoRise
         </div>
         <div className="relative md:flex flex-grow mx-4 ">
           <Input
